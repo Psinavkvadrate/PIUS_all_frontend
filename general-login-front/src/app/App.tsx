@@ -1,7 +1,12 @@
 import { AppRouter } from "./providers/router";
+import { MainLayout } from "./layouts/MainLayout";
 
 function App() {
-  return <AppRouter />;
+  return (
+    <MainLayout>
+      <AppRouter />
+    </MainLayout>
+  );
 }
 
 export default App;
