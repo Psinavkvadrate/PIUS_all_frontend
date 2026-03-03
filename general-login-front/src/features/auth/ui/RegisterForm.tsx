@@ -13,16 +13,144 @@ interface Props {
   onSwitch: () => void;
 }
 
+interface FormData {
+  login: string;
+  password: string;
+  confirmPassword: string;
+  firstName: string;
+  lastName: string;
+  patronymic: string;
+  birthDate: string;
+  city: string;
+  telegram: string;
+  marketName: string;
+}
+
 export const RegisterForm = ({ onSwitch }: Props) => {
   const [step, setStep] = useState(0);
   const [isSeller, setIsSeller] = useState(false);
 
+  const [form, setForm] = useState<FormData>({
+    login: "",
+    password: "",
+    confirmPassword: "",
+    firstName: "",
+    lastName: "",
+    patronymic: "",
+    birthDate: "",
+    city: "",
+    telegram: "",
+    marketName: "",
+  });
+
+  const [errors, setErrors] = useState<Partial<FormData>>({});
+
+  const handleChange = (field: keyof FormData, value: string) => {
+    setForm((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const validateStep = (): boolean => {
+    const newErrors: Partial<FormData> = {};
+
+    // STEP 1
+    if (step === 0) {
+      if (!form.login.trim()) {
+        newErrors.login = "Login is required";
+      } else if (form.login.length < 4) {
+        newErrors.login = "Minimum 4 characters";
+      } else if (!/^[a-zA-Z0-9_]+$/.test(form.login)) {
+        newErrors.login = "Only letters, numbers and _ allowed";
+      }
+
+      if (!form.password) {
+        newErrors.password = "Password is required";
+      } else if (
+        !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/.test(form.password)
+      ) {
+        newErrors.password =
+          "Min 8 chars, 1 uppercase, 1 lowercase, 1 number";
+      }
+
+      if (!form.confirmPassword) {
+        newErrors.confirmPassword = "Confirm your password";
+      } else if (form.confirmPassword !== form.password) {
+        newErrors.confirmPassword = "Passwords do not match";
+      }
+    }
+
+    // STEP 2
+    if (step === 1) {
+      const nameRegex = /^[A-Za-zА-Яа-яЁё\s-]+$/;
+
+      if (!form.firstName.trim()) {
+        newErrors.firstName = "First name is required";
+      } else if (!nameRegex.test(form.firstName)) {
+        newErrors.firstName = "Only letters allowed";
+      }
+
+      if (!form.lastName.trim()) {
+        newErrors.lastName = "Last name is required";
+      } else if (!nameRegex.test(form.lastName)) {
+        newErrors.lastName = "Only letters allowed";
+      }
+
+      if (form.patronymic && !nameRegex.test(form.patronymic)) {
+        newErrors.patronymic = "Only letters allowed";
+      }
+    }
+
+    // STEP 3
+    if (step === 2) {
+      if (!form.birthDate) {
+        newErrors.birthDate = "Birth date is required";
+      } else {
+        const birth = new Date(form.birthDate);
+        const today = new Date();
+        let age = today.getFullYear() - birth.getFullYear();
+        const m = today.getMonth() - birth.getMonth();
+
+        if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) {
+          age--;
+        }
+
+        if (age < 18) {
+          newErrors.birthDate = "You must be 18+";
+        }
+      }
+
+      if (!form.city.trim()) {
+        newErrors.city = "City is required";
+      }
+
+      if (!form.telegram.trim()) {
+        newErrors.telegram = "Telegram is required";
+      } else if (!/^@?[A-Za-z0-9_]{5,32}$/.test(form.telegram)) {
+        newErrors.telegram = "Invalid Telegram username";
+      }
+
+      if (isSeller && !form.marketName.trim()) {
+        newErrors.marketName = "Market name is required";
+      }
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const nextStep = () => {
-    if (step < 2) setStep((prev) => prev + 1);
+    if (validateStep()) {
+      if (step < 2) setStep((prev) => prev + 1);
+    }
   };
 
   const prevStep = () => {
     if (step > 0) setStep((prev) => prev - 1);
+  };
+
+  const handleSubmit = () => {
+    if (validateStep()) {
+      console.log("Form submitted:", form);
+    }
   };
 
   return (
@@ -50,17 +178,73 @@ export const RegisterForm = ({ onSwitch }: Props) => {
         >
           {step === 0 && (
             <>
-              <TextField label="Login" fullWidth />
-              <TextField label="Password" type="password" fullWidth />
-              <TextField label="Confirm Password" type="password" fullWidth />
+              <TextField
+                label="Login"
+                fullWidth
+                value={form.login}
+                onChange={(e) =>
+                  handleChange("login", e.target.value)
+                }
+                error={!!errors.login}
+                helperText={errors.login}
+              />
+              <TextField
+                label="Password"
+                type="password"
+                fullWidth
+                value={form.password}
+                onChange={(e) =>
+                  handleChange("password", e.target.value)
+                }
+                error={!!errors.password}
+                helperText={errors.password}
+              />
+              <TextField
+                label="Confirm Password"
+                type="password"
+                fullWidth
+                value={form.confirmPassword}
+                onChange={(e) =>
+                  handleChange("confirmPassword", e.target.value)
+                }
+                error={!!errors.confirmPassword}
+                helperText={errors.confirmPassword}
+              />
             </>
           )}
 
           {step === 1 && (
             <>
-              <TextField label="First Name" fullWidth />
-              <TextField label="Last Name" fullWidth />
-              <TextField label="Patronymic" fullWidth />
+              <TextField
+                label="First Name"
+                fullWidth
+                value={form.firstName}
+                onChange={(e) =>
+                  handleChange("firstName", e.target.value)
+                }
+                error={!!errors.firstName}
+                helperText={errors.firstName}
+              />
+              <TextField
+                label="Last Name"
+                fullWidth
+                value={form.lastName}
+                onChange={(e) =>
+                  handleChange("lastName", e.target.value)
+                }
+                error={!!errors.lastName}
+                helperText={errors.lastName}
+              />
+              <TextField
+                label="Patronymic"
+                fullWidth
+                value={form.patronymic}
+                onChange={(e) =>
+                  handleChange("patronymic", e.target.value)
+                }
+                error={!!errors.patronymic}
+                helperText={errors.patronymic}
+              />
             </>
           )}
 
@@ -71,28 +255,62 @@ export const RegisterForm = ({ onSwitch }: Props) => {
                 type="date"
                 InputLabelProps={{ shrink: true }}
                 fullWidth
+                value={form.birthDate}
+                onChange={(e) =>
+                  handleChange("birthDate", e.target.value)
+                }
+                error={!!errors.birthDate}
+                helperText={errors.birthDate}
               />
-              <TextField label="City" fullWidth />
-              <TextField label="Telegram" fullWidth />
+              <TextField
+                label="City"
+                fullWidth
+                value={form.city}
+                onChange={(e) =>
+                  handleChange("city", e.target.value)
+                }
+                error={!!errors.city}
+                helperText={errors.city}
+              />
+              <TextField
+                label="Telegram"
+                fullWidth
+                value={form.telegram}
+                onChange={(e) =>
+                  handleChange("telegram", e.target.value)
+                }
+                error={!!errors.telegram}
+                helperText={errors.telegram}
+              />
 
               <FormControlLabel
                 control={
                   <Checkbox
                     checked={isSeller}
-                    onChange={(e) => setIsSeller(e.target.checked)}
+                    onChange={(e) =>
+                      setIsSeller(e.target.checked)
+                    }
                   />
                 }
                 label="Register as Seller"
               />
 
               {isSeller && (
-                <TextField label="Market Name" fullWidth />
+                <TextField
+                  label="Market Name"
+                  fullWidth
+                  value={form.marketName}
+                  onChange={(e) =>
+                    handleChange("marketName", e.target.value)
+                  }
+                  error={!!errors.marketName}
+                  helperText={errors.marketName}
+                />
               )}
             </>
           )}
         </Box>
 
-        {/* Navigation Buttons */}
         <Box className={styles.buttons}>
           {step > 0 && (
             <Button onClick={prevStep} fullWidth>
@@ -110,7 +328,12 @@ export const RegisterForm = ({ onSwitch }: Props) => {
               Next
             </Button>
           ) : (
-            <Button variant="contained" size="large" fullWidth>
+            <Button
+              variant="contained"
+              size="large"
+              onClick={handleSubmit}
+              fullWidth
+            >
               Register
             </Button>
           )}
