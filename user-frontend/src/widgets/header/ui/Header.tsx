@@ -8,6 +8,7 @@ import {
 } from "@mui/material";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   cartCount: number;
@@ -15,10 +16,13 @@ interface Props {
 }
 
 export const Header = ({ cartCount, userName }: Props) => {
+  const navigate = useNavigate();
+  
   return (
     <AppBar
-      position="static"
+      position="sticky"
       sx={{
+        top: 0,
         background: "linear-gradient(135deg, #6c5ce7, #00b894)",
         borderRadius: 3,
         mb: 4,
@@ -48,8 +52,12 @@ export const Header = ({ cartCount, userName }: Props) => {
         />
 
         <Box display="flex" alignItems="center" gap={3}>
-          <Button color="inherit">Главная</Button>
-          <Button color="inherit">Заказы</Button>
+          <Button color="inherit" onClick={() => navigate("/")}>
+            Главная
+          </Button>
+          <Button color="inherit" onClick={() => navigate("/orders")}>
+            Заказы
+          </Button>
 
           <IconButton color="inherit">
             <Badge badgeContent={cartCount} color="secondary">
