@@ -60,7 +60,7 @@ export const Header = ({ cartCount, userName }: Props) => {
           </Button>
 
           <IconButton color="inherit">
-            <Badge badgeContent={cartCount} color="secondary">
+            <Badge badgeContent={cartCount} color="secondary" onClick={() => navigate("/cart")}>
               <ShoppingCartIcon />
             </Badge>
           </IconButton>
