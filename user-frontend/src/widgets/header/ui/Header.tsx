@@ -1,7 +1,6 @@
 import {
   AppBar,
   Toolbar,
-  Typography,
   Box,
   IconButton,
   Badge,
@@ -25,10 +24,28 @@ export const Header = ({ cartCount, userName }: Props) => {
         mb: 4,
       }}
     >
-      <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
-        <Typography variant="h6" sx={{ cursor: "pointer" }}>
-          Marketplace
-        </Typography>
+      <Toolbar
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          minHeight: "64px",
+          height: "64px",
+        }}
+      >
+        <Box
+          component="img"
+          src="/mainlogo.png"
+          alt="Marketplace"
+          sx={{
+            height: 170,
+            objectFit: "contain",
+            cursor: "pointer",
+            transform: [
+              "translateY(5px)",
+              "translateX(-50px)"
+            ].join(' ')
+          }}
+        />
 
         <Box display="flex" alignItems="center" gap={3}>
           <Button color="inherit">Главная</Button>
@@ -42,7 +59,7 @@ export const Header = ({ cartCount, userName }: Props) => {
 
           <Box display="flex" alignItems="center" gap={1}>
             <AccountCircleIcon />
-            <Typography>{userName}</Typography>
+            <span>{userName}</span>
           </Box>
         </Box>
       </Toolbar>

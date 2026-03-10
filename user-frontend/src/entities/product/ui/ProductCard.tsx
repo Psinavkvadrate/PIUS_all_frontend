@@ -27,7 +27,7 @@ export const ProductCard = ({ product, onOpen, onAdd }: Props) => {
           fullWidth
           sx={{
             mt: 2,
-            background: "linear-gradient(135deg, #6c5ce7, #00b894)",
+            background: "#6c5ce7",
             color: "#fff",
             "&:hover": { opacity: 0.9 },
           }}
