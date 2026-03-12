@@ -1,19 +1,38 @@
-export type ProductCategory =
-  | "electronics"
-  | "clothing"
-  | "food"
-  | "home"
-  | "beauty"
-  | "sports"
-  | "books"
-  | "other";
+export interface MarketShort {
+  marketId: string;
+  marketName: string;
+}
 
 export interface Product {
   id: string;
   name: string;
+  description: string;
+  category: string;
   price: number;
   img: string;
   available: number;
-  category: ProductCategory;
-  description?: string;
+  createdAt: string;
+  market: MarketShort;
+}
+
+export interface Pagination {
+  page: number;
+  limit: number;
+  totalItems: number;
+  totalPages: number;
+}
+
+export interface ProductListResponse {
+  items: Product[];
+  pagination: Pagination;
+}
+
+export interface ProductFilters {
+  page: number;
+  limit: number;
+  search?: string;
+  category?: string;
+  min_price?: number;
+  max_price?: number;
+  available?: boolean;
 }

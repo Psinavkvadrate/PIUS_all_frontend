@@ -14,21 +14,22 @@ export const useCart = () => {
   };
 };
 
-export interface CartItem {
-  productId: string
-  name: string
-  price: number
-  available: number
-  quantity: number
-  img: string
+export interface CartMarket {
+  marketId: string;
+  marketName: string;
+}
 
-  market: {
-    marketId: string
-    marketName: string
-  }
+export interface CartItem {
+  productId: string;
+  name: string;
+  price: number;
+  available: number;
+  quantity: number;
+  img: string;
+  market: CartMarket;
 }
 
 export interface CartResponse {
-  items: CartItem[]
-  totalPrice: number
+  items: CartItem[];
+  totalPrice: number;
 }

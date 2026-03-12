@@ -37,22 +37,31 @@ class ProductRepository:
         if not total_items:
             return [], 0
 
-        query = query.order_by(Product.id).limit(filters.limit).offset(filters.offset)
+        offset = (filters.page - 1) * filters.limit
+
+        query = (
+            query
+            .order_by(Product.id)
+            .limit(filters.limit)
+            .offset(offset)
+        )
         result = await self.session.execute(query)
         data = result.all()
 
         items = []
         for product, market in data:
             items.append({
-                'id': product.id,
-                'name': product.name,
-                'description': product.description,
-                'price': product.price,
-                'category': product.category,
-                'available': product.available,
-                'market': {
-                    'marketId': market.marketId,
-                    'name': market.name
+                "id": product.id,
+                "name": product.name,
+                "description": product.description,
+                "price": product.price,
+                "category": product.category,
+                "img": product.img,
+                "available": product.available,
+                "createdAt": product.createdAt,
+                "market": {
+                    "marketId": market.marketId,
+                    "marketName": market.marketName
                 }
             })
 

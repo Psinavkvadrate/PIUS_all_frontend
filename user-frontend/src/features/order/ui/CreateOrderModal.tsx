@@ -1,28 +1,26 @@
-import {
-  Modal,
-  Box,
-  TextField,
-  Typography,
-  Button,
-} from "@mui/material"
-import { useState } from "react"
+import { Modal, Box, TextField, Typography, Button } from "@mui/material";
+import { useState } from "react";
+import { orderApi } from "../../../entities/order/api/orderApi";
 
 interface Props {
-  open: boolean
-  onClose: () => void
-  onConfirm: (data: {
-    deliveryAddress: string
-    deliveryCity: string
-    phone: string
-    deliveryComment: string
-  }) => void
+  open: boolean;
+  onClose: () => void;
 }
 
-export const CreateOrderModal = ({ open, onClose, onConfirm }: Props) => {
-  const [address, setAddress] = useState("")
-  const [city, setCity] = useState("")
-  const [phone, setPhone] = useState("")
-  const [comment, setComment] = useState("")
+export const CreateOrderModal = ({ open, onClose }: Props) => {
+  const [address, setAddress] = useState("");
+  const [city, setCity] = useState("");
+  const [phone, setPhone] = useState("");
+  const [comment, setComment] = useState("");
+
+  const handleConfirm = async () => {
+    await orderApi.createOrder({
+      deliveryAddress: address,
+      deliveryCity: city,
+      phone,
+      deliveryComment: comment,
+    });
+  };
 
   return (
     <Modal open={open} onClose={onClose}>
@@ -65,20 +63,10 @@ export const CreateOrderModal = ({ open, onClose, onConfirm }: Props) => {
           onChange={(e) => setComment(e.target.value)}
         />
 
-        <Button
-          variant="contained"
-          onClick={() =>
-            onConfirm({
-              deliveryAddress: address,
-              deliveryCity: city,
-              phone,
-              deliveryComment: comment,
-            })
-          }
-        >
+        <Button variant="contained" onClick={() => handleConfirm()}>
           Подтвердить
         </Button>
       </Box>
     </Modal>
-  )
-}
+  );
+};

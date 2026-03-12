@@ -1,8 +1,12 @@
-import { useState } from "react";
-import type { OrderSummary, OrderDetails } from "../../../entities/order/model/types";
+import { useEffect, useState } from "react";
+import type {
+  OrderSummary,
+  OrderDetails,
+} from "../../../entities/order/model/types";
 import { OrderCard } from "../../../entities/order/ui/OrderCard";
 import { OrderDetailsModal } from "../../../features/order/ui/OrderDetailsModal";
 import { Box } from "@mui/material";
+import { orderApi } from "../../../entities/order/api/orderApi";
 
 // Моковые данные
 const mockOrders: OrderSummary[] = [
@@ -47,6 +51,12 @@ const mockOrderDetails: Record<string, OrderDetails> = {
 export const UserOrdersPage = () => {
   const [selected, setSelected] = useState<OrderDetails | null>(null);
 
+  useEffect(() => {
+    orderApi.getOrders().then((data) => {
+      setOrders(data.orders);
+    });
+  }, []);
+
   return (
     <>
       <Box sx={{ mt: 3, mb: 6, width: "90%", maxWidth: 1200, mx: "auto" }}>
@@ -67,3 +77,7 @@ export const UserOrdersPage = () => {
     </>
   );
 };
+
+function setOrders(orders: OrderSummary[]) {
+  throw new Error("Function not implemented.");
+}

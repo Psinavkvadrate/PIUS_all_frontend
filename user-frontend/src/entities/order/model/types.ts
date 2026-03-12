@@ -1,4 +1,8 @@
-export type OrderStatus = "generated" | "in_progress" | "completed" | "declined";
+export type OrderStatus =
+  | "generated"
+  | "in_progress"
+  | "completed"
+  | "declined";
 
 export interface OrderSummary {
   orderId: string;
@@ -31,4 +35,12 @@ export interface OrderDetails {
   deliveryAddress: string;
   deliveryCity: string;
   markets: OrderMarket[];
+}
+
+export interface OrderHistoryResponse {
+  orders: OrderSummary[];
+  pagination: {
+    page: number;
+    totalPages: number;
+  };
 }

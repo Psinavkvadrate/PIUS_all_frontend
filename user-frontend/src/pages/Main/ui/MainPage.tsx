@@ -1,26 +1,58 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Filters } from "../../../widgets/filters/ui/Filters";
 import { ProductList } from "../../../entities/product/ui/ProductList";
 import { ProductModal } from "../../../features/product/ui/ProductModal";
+import { productApi } from "../../../entities/product/api/productApi";
 import type { Product } from "../../../entities/product/model/types";
-
-const mockProducts: Product[] = Array.from({ length: 8 }).map((_, i) => ({
-  id: String(i),
-  name: `Product ${i + 1}`,
-  price: 100 + i * 10,
-  img: "https://preview.redd.it/im-having-this-404-error-and-idk-why-v0-zg0r0v2va7fe1.jpeg?width=1080&crop=smart&auto=webp&s=67a43b9200ad93397b05d7a61142322f6e3c7b84",
-  available: 5,
-  category: "electronics",
-  description: "Полное описание товара",
-}));
+import type { ProductFilters } from "../../../entities/product/model/types";
 
 export const MainPage = () => {
+  const [products, setProducts] = useState<Product[]>([]);
   const [selected, setSelected] = useState<Product | null>(null);
+
+  const [filters, setFilters] = useState<ProductFilters>({
+    page: 1,
+    limit: 12,
+  });
+
+  const [totalPages, setTotalPages] = useState(1);
+
+  useEffect(() => {
+    loadProducts();
+  }, [filters]);
+
+  const loadProducts = async () => {
+    const res = await productApi.getProducts(filters);
+
+    setProducts(res.items);
+    setTotalPages(res.pagination.totalPages);
+  };
 
   return (
     <>
-      <Filters />
-      <ProductList products={mockProducts} />
+      <Filters
+        onApply={(f) =>
+          setFilters({
+            ...filters,
+            ...f,
+            page: 1,
+          })
+        }
+      />
+
+      <ProductList
+        products={products}
+        page={filters.page}
+        totalPages={totalPages}
+        onPageChange={(p) =>
+          setFilters({
+            ...filters,
+            page: p,
+          })
+        }
+        onOpen={setSelected}
+      />
+
       <ProductModal
         product={selected}
         open={Boolean(selected)}

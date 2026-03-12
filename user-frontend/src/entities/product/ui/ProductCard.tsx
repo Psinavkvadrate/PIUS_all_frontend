@@ -1,5 +1,12 @@
-import { Card, CardContent, CardMedia, Typography, Button } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  CardMedia,
+  Typography,
+  Button,
+} from "@mui/material";
 import type { Product } from "../model/types";
+import { cartApi } from "../../cart/api/cartApi";
 
 interface Props {
   product: Product;
@@ -7,7 +14,11 @@ interface Props {
   onAdd: () => void;
 }
 
-export const ProductCard = ({ product, onOpen, onAdd }: Props) => {
+export const ProductCard = ({ product, onOpen }: Props) => {
+  const handleAdd = async () => {
+    await cartApi.add(product.id, 1);
+  };
+
   return (
     <Card sx={{ borderRadius: 3 }}>
       <CardMedia
@@ -20,7 +31,7 @@ export const ProductCard = ({ product, onOpen, onAdd }: Props) => {
       <CardContent>
         <Typography variant="h6">{product.name}</Typography>
         <Typography color="primary" fontWeight={600}>
-          ${product.price}
+          {product.price}₽
         </Typography>
 
         <Button
@@ -31,7 +42,7 @@ export const ProductCard = ({ product, onOpen, onAdd }: Props) => {
             color: "#fff",
             "&:hover": { opacity: 0.9 },
           }}
-          onClick={onAdd}
+          onClick={handleAdd}
         >
           Добавить в корзину
         </Button>

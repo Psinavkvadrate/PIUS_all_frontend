@@ -35,7 +35,7 @@ class ProductItemSchema(BaseModel):
     price: Decimal
     img: str
     available: int
-    createdAt: datetime.date
+    createdAt: datetime.datetime
 
     market: MarketShortSchema
 
