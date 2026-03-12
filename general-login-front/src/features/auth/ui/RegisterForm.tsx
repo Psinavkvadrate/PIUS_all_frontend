@@ -8,6 +8,8 @@ import {
   Checkbox,
 } from "@mui/material";
 import styles from "./AuthForms.module.css";
+import { authApi } from "../api/authApi";
+import { tokenService } from "../../../shared/lib/token";
 
 interface Props {
   onSwitch: () => void;
@@ -64,11 +66,8 @@ export const RegisterForm = ({ onSwitch }: Props) => {
 
       if (!form.password) {
         newErrors.password = "Password is required";
-      } else if (
-        !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/.test(form.password)
-      ) {
-        newErrors.password =
-          "Min 8 chars, 1 uppercase, 1 lowercase, 1 number";
+      } else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/.test(form.password)) {
+        newErrors.password = "Min 8 chars, 1 uppercase, 1 lowercase, 1 number";
       }
 
       if (!form.confirmPassword) {
@@ -147,9 +146,30 @@ export const RegisterForm = ({ onSwitch }: Props) => {
     if (step > 0) setStep((prev) => prev - 1);
   };
 
-  const handleSubmit = () => {
-    if (validateStep()) {
-      console.log("Form submitted:", form);
+  const handleSubmit = async () => {
+    if (!validateStep()) return;
+
+    try {
+      const data = await authApi.register({
+        login: form.login,
+        password: form.password,
+        firstName: form.firstName,
+        lastName: form.lastName,
+        patronymic: form.patronymic,
+        dateOfBirth: form.birthDate,
+        city: form.city,
+        telegram: form.telegram,
+        isSeller,
+        marketName: form.marketName,
+      });
+
+      tokenService.set(data.token);
+
+      console.log("User:", data.user);
+
+      window.location.href = "/";
+    } catch (e: any) {
+      alert(e.response?.data?.detail || "Register failed");
     }
   };
 
@@ -172,19 +192,14 @@ export const RegisterForm = ({ onSwitch }: Props) => {
           Step {step + 1} of 3
         </Typography>
 
-        <Box
-          key={step}
-          className={`${styles.step} ${styles.stepAnimation}`}
-        >
+        <Box key={step} className={`${styles.step} ${styles.stepAnimation}`}>
           {step === 0 && (
             <>
               <TextField
                 label="Login"
                 fullWidth
                 value={form.login}
-                onChange={(e) =>
-                  handleChange("login", e.target.value)
-                }
+                onChange={(e) => handleChange("login", e.target.value)}
                 error={!!errors.login}
                 helperText={errors.login}
               />
@@ -193,9 +208,7 @@ export const RegisterForm = ({ onSwitch }: Props) => {
                 type="password"
                 fullWidth
                 value={form.password}
-                onChange={(e) =>
-                  handleChange("password", e.target.value)
-                }
+                onChange={(e) => handleChange("password", e.target.value)}
                 error={!!errors.password}
                 helperText={errors.password}
               />
@@ -219,9 +232,7 @@ export const RegisterForm = ({ onSwitch }: Props) => {
                 label="First Name"
                 fullWidth
                 value={form.firstName}
-                onChange={(e) =>
-                  handleChange("firstName", e.target.value)
-                }
+                onChange={(e) => handleChange("firstName", e.target.value)}
                 error={!!errors.firstName}
                 helperText={errors.firstName}
               />
@@ -229,9 +240,7 @@ export const RegisterForm = ({ onSwitch }: Props) => {
                 label="Last Name"
                 fullWidth
                 value={form.lastName}
-                onChange={(e) =>
-                  handleChange("lastName", e.target.value)
-                }
+                onChange={(e) => handleChange("lastName", e.target.value)}
                 error={!!errors.lastName}
                 helperText={errors.lastName}
               />
@@ -239,9 +248,7 @@ export const RegisterForm = ({ onSwitch }: Props) => {
                 label="Patronymic"
                 fullWidth
                 value={form.patronymic}
-                onChange={(e) =>
-                  handleChange("patronymic", e.target.value)
-                }
+                onChange={(e) => handleChange("patronymic", e.target.value)}
                 error={!!errors.patronymic}
                 helperText={errors.patronymic}
               />
@@ -256,9 +263,7 @@ export const RegisterForm = ({ onSwitch }: Props) => {
                 InputLabelProps={{ shrink: true }}
                 fullWidth
                 value={form.birthDate}
-                onChange={(e) =>
-                  handleChange("birthDate", e.target.value)
-                }
+                onChange={(e) => handleChange("birthDate", e.target.value)}
                 error={!!errors.birthDate}
                 helperText={errors.birthDate}
               />
@@ -266,9 +271,7 @@ export const RegisterForm = ({ onSwitch }: Props) => {
                 label="City"
                 fullWidth
                 value={form.city}
-                onChange={(e) =>
-                  handleChange("city", e.target.value)
-                }
+                onChange={(e) => handleChange("city", e.target.value)}
                 error={!!errors.city}
                 helperText={errors.city}
               />
@@ -276,9 +279,7 @@ export const RegisterForm = ({ onSwitch }: Props) => {
                 label="Telegram"
                 fullWidth
                 value={form.telegram}
-                onChange={(e) =>
-                  handleChange("telegram", e.target.value)
-                }
+                onChange={(e) => handleChange("telegram", e.target.value)}
                 error={!!errors.telegram}
                 helperText={errors.telegram}
               />
@@ -287,9 +288,7 @@ export const RegisterForm = ({ onSwitch }: Props) => {
                 control={
                   <Checkbox
                     checked={isSeller}
-                    onChange={(e) =>
-                      setIsSeller(e.target.checked)
-                    }
+                    onChange={(e) => setIsSeller(e.target.checked)}
                   />
                 }
                 label="Register as Seller"
@@ -300,9 +299,7 @@ export const RegisterForm = ({ onSwitch }: Props) => {
                   label="Market Name"
                   fullWidth
                   value={form.marketName}
-                  onChange={(e) =>
-                    handleChange("marketName", e.target.value)
-                  }
+                  onChange={(e) => handleChange("marketName", e.target.value)}
                   error={!!errors.marketName}
                   helperText={errors.marketName}
                 />

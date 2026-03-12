@@ -15,7 +15,7 @@ class AuthService:
     async def register(self, request):
         existing_user = await self.session.scalar(select(User).where(User.login == request.login))
         if existing_user:
-            return None,
+            return None, "User already exists"
 
         user = User(
             login=request.login,
@@ -50,7 +50,7 @@ class AuthService:
     async def login(self, request):
         user = await self.session.scalar(select(User).where(User.login == request.login))
         if not user or not verify_password(request.password, user.passwordHash):
-            return None,
+            return None, "Invalid credentials",
 
         token_str = create_access_token({"sub": str(user.userId)})
         token = UserToken(

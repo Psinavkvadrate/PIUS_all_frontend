@@ -24,7 +24,6 @@ export const AuthPage = () => {
           <Box className={`${styles.image} ${styles.loginImage}`} />
 
           <Box className={`${styles.image} ${styles.registerImage}`} />
-
         </Box>
 
         <Box className={styles.formPanel}>
