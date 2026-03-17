@@ -13,6 +13,7 @@ export interface OrderSummary {
 }
 
 export interface OrderItem {
+  priceAtPurchase: number;
   productId: string;
   name: string;
   quantity: number;

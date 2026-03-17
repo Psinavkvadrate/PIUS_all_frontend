@@ -1,11 +1,6 @@
-import {
-  Dialog,
-  DialogContent,
-  Typography,
-  Button,
-  Box,
-} from "@mui/material";
-import type { Product } from "../model/types";
+import { Dialog, DialogContent, Typography, Button, Box } from "@mui/material";
+import type { Product } from "../../../entities/product/model/types";
+import { useAddToCartMutation } from "../../../entities/cart/api/cartApi";
 
 interface Props {
   product: Product | null;
@@ -14,7 +9,20 @@ interface Props {
 }
 
 export const ProductModal = ({ product, open, onClose }: Props) => {
+  const [addToCart, { isLoading }] = useAddToCartMutation();
+
   if (!product) return null;
+
+  const handleAdd = async () => {
+    try {
+      await addToCart({
+        productId: product.id,
+        quantity: 1,
+      }).unwrap();
+    } catch (e) {
+      console.error("Ошибка добавления", e);
+    }
+  };
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
@@ -29,6 +37,8 @@ export const ProductModal = ({ product, open, onClose }: Props) => {
 
           <Button
             variant="contained"
+            disabled={isLoading}
+            onClick={handleAdd}
             sx={{
               background: "linear-gradient(135deg, #6c5ce7, #00b894)",
             }}

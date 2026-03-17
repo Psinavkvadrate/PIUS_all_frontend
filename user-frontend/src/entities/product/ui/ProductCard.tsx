@@ -6,17 +6,25 @@ import {
   Button,
 } from "@mui/material";
 import type { Product } from "../model/types";
-import { cartApi } from "../../cart/api/cartApi";
+import { useAddToCartMutation } from "../../cart/api/cartApi";
 
 interface Props {
   product: Product;
   onOpen: () => void;
-  onAdd: () => void;
 }
 
 export const ProductCard = ({ product, onOpen }: Props) => {
+  const [addToCart, { isLoading }] = useAddToCartMutation();
+
   const handleAdd = async () => {
-    await cartApi.add(product.id, 1);
+    try {
+      await addToCart({
+        productId: product.id,
+        quantity: 1,
+      }).unwrap();
+    } catch (e) {
+      console.error("Ошибка добавления в корзину", e);
+    }
   };
 
   return (
@@ -28,14 +36,17 @@ export const ProductCard = ({ product, onOpen }: Props) => {
         onClick={onOpen}
         sx={{ cursor: "pointer" }}
       />
+
       <CardContent>
         <Typography variant="h6">{product.name}</Typography>
+
         <Typography color="primary" fontWeight={600}>
           {product.price}₽
         </Typography>
 
         <Button
           fullWidth
+          disabled={isLoading}
           sx={{
             mt: 2,
             background: "#6c5ce7",

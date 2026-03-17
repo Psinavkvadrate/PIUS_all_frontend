@@ -35,7 +35,7 @@ export const OrderCard = ({ order, onClick }: Props) => {
         </Box>
 
         <Box>
-          <Typography variant="body1">Сумма: ${order.totalPrice.toFixed(2)}</Typography>
+          <Typography variant="body1">Сумма: {order.totalPrice.toFixed(2)} ₽</Typography>
           <Typography variant="body2">Товаров: {order.totalItems}</Typography>
         </Box>
 

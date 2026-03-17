@@ -1,27 +1,42 @@
 import { baseApi } from "../../../shared/api/baseApi";
 import type { OrderHistoryResponse, OrderDetails } from "../model/types";
 
-export const orderApi = {
-  async getOrders(page = 1) {
-    const res = await baseApi.get<OrderHistoryResponse>("/orders/my", {
-      params: { page },
-    });
+export const orderApi = baseApi.injectEndpoints({
+  endpoints: (builder) => ({
+    getOrders: builder.query<OrderHistoryResponse, number | void>({
+      query: (page = 1) => ({
+        url: "/orders/my",
+        params: { page },
+      }),
+      providesTags: ["Order"],
+    }),
 
-    return res.data;
-  },
+    getOrderDetails: builder.query<OrderDetails, string>({
+      query: (id) => `/orders/${id}`,
+      providesTags: ["Order"],
+    }),
 
-  async getOrderDetails(id: string) {
-    const res = await baseApi.get<OrderDetails>(`/orders/${id}`);
-    return res.data;
-  },
+    createOrder: builder.mutation<
+      any,
+      {
+        deliveryAddress: string;
+        deliveryCity: string;
+        phone: string;
+        deliveryComment?: string;
+      }
+    >({
+      query: (data) => ({
+        url: "/orders",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Order", "Cart", "User"],
+    }),
+  }),
+});
 
-  async createOrder(data: {
-    deliveryAddress: string;
-    deliveryCity: string;
-    phone: string;
-    deliveryComment?: string;
-  }) {
-    const res = await baseApi.post("/orders", data);
-    return res.data;
-  },
-};
+export const {
+  useGetOrdersQuery,
+  useGetOrderDetailsQuery,
+  useCreateOrderMutation,
+} = orderApi;

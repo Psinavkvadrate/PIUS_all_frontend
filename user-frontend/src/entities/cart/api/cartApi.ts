@@ -1,32 +1,50 @@
 import { baseApi } from "../../../shared/api/baseApi";
 import type { CartResponse } from "../model/types";
 
-export const cartApi = {
-  async getCart() {
-    const res = await baseApi.get<CartResponse>("/cart/");
-    return res.data;
-  },
+export const cartApi = baseApi.injectEndpoints({
+  endpoints: (builder) => ({
+    getCart: builder.query<CartResponse, void>({
+      query: () => "/cart/",
+      providesTags: ["Cart"],
+    }),
 
-  async add(productId: string, quantity = 1) {
-    const res = await baseApi.post("/cart/add", {
-      productId,
-      quantity,
-    });
+    addToCart: builder.mutation<
+      any,
+      { productId: string; quantity?: number }
+    >({
+      query: ({ productId, quantity = 1 }) => ({
+        url: "/cart/add",
+        method: "POST",
+        body: { productId, quantity },
+      }),
+      invalidatesTags: ["Cart", "User"],
+    }),
 
-    return res.data;
-  },
+    updateCartItem: builder.mutation<
+      any,
+      { productId: string; quantity: number }
+    >({
+      query: ({ productId, quantity }) => ({
+        url: "/cart/item/update",
+        method: "PATCH",
+        body: { productId, quantity },
+      }),
+      invalidatesTags: ["Cart", "User"],
+    }),
 
-  async update(productId: string, quantity: number) {
-    const res = await baseApi.patch("/cart/item/update", {
-      productId,
-      quantity,
-    });
+    removeCartItem: builder.mutation<any, string>({
+      query: (productId) => ({
+        url: `/cart/item/${productId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Cart", "User"],
+    }),
+  }),
+});
 
-    return res.data;
-  },
-
-  async remove(productId: string) {
-    const res = await baseApi.delete(`/cart/item/${productId}`);
-    return res.data;
-  },
-};
+export const {
+  useGetCartQuery,
+  useAddToCartMutation,
+  useUpdateCartItemMutation,
+  useRemoveCartItemMutation,
+} = cartApi;

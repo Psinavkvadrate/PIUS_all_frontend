@@ -1,17 +1,24 @@
 import { baseApi } from "../../../shared/api/baseApi";
 import type { Product, ProductFilters } from "../model/types";
 
-export const productApi = {
-  async getProducts(filters: ProductFilters) {
-    const res = await baseApi.get("/products", {
-      params: filters,
-    });
+export const productApi = baseApi.injectEndpoints({
+  endpoints: (builder) => ({
+    getProducts: builder.query<any, ProductFilters>({
+      query: (filters) => ({
+        url: "/products",
+        params: filters,
+      }),
+      providesTags: ["Product"],
+    }),
 
-    return res.data;
-  },
+    getProduct: builder.query<Product, string>({
+      query: (id) => `/products/${id}`,
+      providesTags: ["Product"],
+    }),
+  }),
+});
 
-  async getProduct(id: string) {
-    const res = await baseApi.get<Product>(`/products/${id}`);
-    return res.data;
-  },
-};
+export const {
+  useGetProductsQuery,
+  useGetProductQuery,
+} = productApi;

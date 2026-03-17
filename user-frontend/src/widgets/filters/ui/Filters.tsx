@@ -54,15 +54,15 @@ export const Filters = ({ onApply }: Props) => {
         value={category}
         onChange={(e) => setCategory(e.target.value)}
       >
-        <MenuItem value="">All</MenuItem>
-        <MenuItem value="electronics">Electronics</MenuItem>
-        <MenuItem value="clothing">Clothing</MenuItem>
-        <MenuItem value="food">Food</MenuItem>
-        <MenuItem value="home">Home</MenuItem>
-        <MenuItem value="beauty">Beauty</MenuItem>
-        <MenuItem value="sports">Sports</MenuItem>
-        <MenuItem value="books">Books</MenuItem>
-        <MenuItem value="other">Other</MenuItem>
+        <MenuItem value="">Все</MenuItem>
+        <MenuItem value="electronics">Электроника</MenuItem>
+        <MenuItem value="clothing">Одежда</MenuItem>
+        <MenuItem value="food">Еда</MenuItem>
+        <MenuItem value="home">Товары для дома</MenuItem>
+        <MenuItem value="beauty">Уход</MenuItem>
+        <MenuItem value="sports">Спорт</MenuItem>
+        <MenuItem value="books">Книги</MenuItem>
+        <MenuItem value="other">Другое</MenuItem>
       </TextField>
 
       <TextField

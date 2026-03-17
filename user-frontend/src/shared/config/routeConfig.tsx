@@ -1,7 +1,7 @@
 import { type RouteObject } from "react-router-dom";
 import { MainPage } from "../../pages/Main/ui/MainPage";
 import { UserOrdersPage } from "../../pages/UserOrdersPage/ui/UserOrdersPage";
-import { CartPage } from "../../pages/CartPage/ui/CartPAge";
+import { CartPage } from "../../pages/CartPage/ui/CartPage";
 
 export const routeConfig: RouteObject[] = [
   {

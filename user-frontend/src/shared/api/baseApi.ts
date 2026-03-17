@@ -1,19 +1,26 @@
-import axios from "axios";
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-export const baseApi = axios.create({
-  baseURL: "http://localhost:8000/api",
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
+export const baseApi = createApi({
+  reducerPath: "baseApi",
+  baseQuery: fetchBaseQuery({
+    baseUrl: "http://localhost:8000/api",
+    credentials: "include",
 
-baseApi.interceptors.request.use((config) => {
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhMDAwMDBhYS0wMDAwLTBhMDAtMGFhMC1hMDBhMGEwMDAwMGEifQ._PQ4GHbZ5tKH6sAzPIRU_XiYfLpyai5vHFEYvIF12LE";
+    prepareHeaders: (headers) => {
+      const token =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhMDAwMDBhYS0wMDAwLTBhMDAtMGFhMC1hMDBhMGEwMDAwMGEifQ._PQ4GHbZ5tKH6sAzPIRU_XiYfLpyai5vHFEYvIF12LE";
 
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
+      if (token) {
+        headers.set("Authorization", `Bearer ${token}`);
+      }
 
-  return config;
+      headers.set("Content-Type", "application/json");
+
+      return headers;
+    },
+  }),
+
+  tagTypes: ["User", "Cart", "Order", "Product"],
+
+  endpoints: () => ({}),
 });
