@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
 
-DATABASE_URL = "postgresql+asyncpg://postgres:pass@localhost:5432/marketplace_db"
+DATABASE_URL = "postgresql+asyncpg://postgres:10072005@localhost:5432/sellerOrders"
 
 engine = create_async_engine(DATABASE_URL, echo=True)
 
