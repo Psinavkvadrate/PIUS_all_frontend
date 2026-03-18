@@ -3,7 +3,13 @@ import { ProductCard } from "../../../entities/product/ui/ProductCard";
 import { useGetMyProductsQuery } from "../../..//entities/product/api/productApi";
 
 export const ProductList = ({ filters }) => {
-  const { data } = useGetMyProductsQuery(filters);
+  const normalizedFilters = {
+    ...filters,
+    search: filters.search || undefined,
+    category: filters.category || undefined,
+  };
+
+  const { data } = useGetMyProductsQuery(normalizedFilters);
 
   return (
     <Grid container spacing={2}>

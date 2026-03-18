@@ -1,9 +1,9 @@
-import { Box, Button } from "@mui/material";
+import { Box, Button, Container } from "@mui/material";
 import { useState } from "react";
 
-import { MarketInfo } from "../../../widgets/marketInfo/ui/marketInfo";
 import { Filters } from "../../../widgets/filters/ui/Filters";
 import { ProductList } from "../../../widgets/poductList/ui/ProductList";
+import { CreateProductModal } from "../../../features/product/ui/CreateProductModal";
 
 export const SellerDashboardPage = () => {
   const [filters, setFilters] = useState({
@@ -13,16 +13,17 @@ export const SellerDashboardPage = () => {
     category: "",
   });
 
-  return (
-    <Box>
-      <MarketInfo />
+  const [open, setOpen] = useState(false);
 
+  return (
+    <Container maxWidth="xl">
       <Filters filters={filters} setFilters={setFilters} />
 
       <ProductList filters={filters} />
 
       <Button
         variant="contained"
+        onClick={() => setOpen(true)}
         sx={{
           position: "fixed",
           bottom: 40,
@@ -31,6 +32,8 @@ export const SellerDashboardPage = () => {
       >
         + Добавить товар
       </Button>
-    </Box>
+
+      <CreateProductModal open={open} onClose={() => setOpen(false)} />
+    </Container>
   );
 };

@@ -1,5 +1,5 @@
+import { ShoppingBasketRounded } from "@mui/icons-material";
 import { AppBar, Toolbar, Box, Button } from "@mui/material";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useNavigate } from "react-router-dom";
 
 interface Props {
@@ -47,7 +47,7 @@ export const Header = ({ userName }: Props) => {
             Заказы
           </Button>
           <Box display="flex" alignItems="center" gap={1}>
-            <AccountCircleIcon />
+            <ShoppingBasketRounded />
             <span>{userName}</span>
           </Box>
         </Box>

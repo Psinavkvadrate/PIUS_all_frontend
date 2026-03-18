@@ -3,14 +3,15 @@ import { Box } from "@mui/material";
 import styles from "./MainLayout.module.css";
 import { Header } from "../../widgets/header/ui/Header";
 import { Footer } from "../../widgets/footer/ui/Footer";
+import { useGetMyMarketQuery } from "../../entities/market/api/marketApi";
 
 interface Props {
   children: ReactNode;
 }
 
 export const MainLayout = ({ children }: Props) => {
-  const userName = "Продавец";
-  const isLoading = false;
+  const { data } = useGetMyMarketQuery(undefined);
+  const userName = data?.marketName;
 
   return (
     <Box className={styles.background}>

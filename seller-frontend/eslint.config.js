@@ -19,5 +19,10 @@ export default defineConfig([
       ecmaVersion: 2020,
       globals: globals.browser,
     },
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'off', // Отключает запрет на использование any
+      '@typescript-eslint/no-unsafe-assignment': 'off', // Отключает проверку небезопасных присваиваний
+      '@typescript-eslint/no-unsafe-member-access': 'off', // Отключает проверку доступа к членам any
+    },
   },
 ])
