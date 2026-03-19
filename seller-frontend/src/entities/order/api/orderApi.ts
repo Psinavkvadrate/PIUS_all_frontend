@@ -10,13 +10,23 @@ export const orderApi = baseApi.injectEndpoints({
       providesTags: ["Orders"],
     }),
 
+    getOrderById: builder.query({
+      query: (id) => ({
+        url: `/seller/orders/${id}`,
+      }),
+      providesTags: (result, error, id) => [{ type: "Orders", id }],
+    }),
+
     updateOrderStatus: builder.mutation({
       query: ({ id, status }) => ({
         url: `/seller/orders/${id}/status`,
         method: "PATCH",
         body: { status },
       }),
-      invalidatesTags: ["Orders"],
+      invalidatesTags: (result, error, { id }) => [
+        "Orders",
+        { type: "Orders", id },
+      ],
     }),
 
     deleteOrder: builder.mutation({
@@ -31,6 +41,7 @@ export const orderApi = baseApi.injectEndpoints({
 
 export const {
   useGetOrdersQuery,
+  useGetOrderByIdQuery,
   useUpdateOrderStatusMutation,
   useDeleteOrderMutation,
 } = orderApi;
