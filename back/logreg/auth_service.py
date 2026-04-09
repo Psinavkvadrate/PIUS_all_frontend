@@ -2,10 +2,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from datetime import datetime, timedelta, timezone
 from src.models.user import User
-from src.models.market import Market
 from src.models.user_token import UserToken
 from logreg.security import hash_password, verify_password, create_access_token
-from src.app.config import ACCESS_TOKEN_EXPIRE_MINUTES
+from src.app.config import settings
 
 
 class AuthService:
@@ -15,7 +14,7 @@ class AuthService:
     async def register(self, request):
         existing_user = await self.session.scalar(select(User).where(User.login == request.login))
         if existing_user:
-            return None, "User already exists"
+            return None,
 
         user = User(
             login=request.login,
@@ -32,15 +31,11 @@ class AuthService:
         self.session.add(user)
         await self.session.flush()
 
-        if request.isSeller:
-            market = Market(userId=user.userId, marketName=f"{user.firstName}'s Market")
-            self.session.add(market)
-
         token_str = create_access_token({"sub": str(user.userId)})
         token = UserToken(
             userId=user.userId,
             token=token_str,
-            expiresAt=datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+            expiresAt=datetime.utcnow() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
         )
         self.session.add(token)
 
@@ -50,13 +45,13 @@ class AuthService:
     async def login(self, request):
         user = await self.session.scalar(select(User).where(User.login == request.login))
         if not user or not verify_password(request.password, user.passwordHash):
-            return None, "Invalid credentials",
+            return None,
 
         token_str = create_access_token({"sub": str(user.userId)})
         token = UserToken(
             userId=user.userId,
             token=token_str,
-            expiresAt=datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+            expiresAt=datetime.utcnow() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
         )
         self.session.add(token)
 

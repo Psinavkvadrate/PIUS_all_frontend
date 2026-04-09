@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Button, TextField, Typography, Box } from "@mui/material";
 import styles from "./AuthForms.module.css";
 import { authApi } from "../api/authApi";
-import { tokenService } from "../../../shared/lib/token";
 
 interface Props {
   onSwitch: () => void;
@@ -19,11 +18,11 @@ export const LoginForm = ({ onSwitch }: Props) => {
         password,
       });
 
-      tokenService.set(data.token);
+      const targetUrl = data.user.isSeller
+        ? "http://localhost:5172"
+        : "http://localhost:5171";
 
-      console.log("User:", data.user);
-
-      window.location.href = "/";
+      window.location.href = `${targetUrl}?token=${data.token}`;
     } catch (e: any) {
       alert(e.response?.data?.detail || "Login failed");
     }

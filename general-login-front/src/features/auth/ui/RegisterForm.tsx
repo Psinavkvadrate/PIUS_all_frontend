@@ -165,9 +165,11 @@ export const RegisterForm = ({ onSwitch }: Props) => {
 
       tokenService.set(data.token);
 
-      console.log("User:", data.user);
+      const targetUrl = data.user.isSeller
+        ? "http://localhost:5172"
+        : "http://localhost:5171";
 
-      window.location.href = "/";
+      window.location.href = `${targetUrl}?token=${data.token}`;
     } catch (e: any) {
       alert(e.response?.data?.detail || "Register failed");
     }
